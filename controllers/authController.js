@@ -1,5 +1,28 @@
 const User = require('../models/User')
 
+//custom error handler
+const handleError = (err) => {
+    console.log(err.message, err.code);
+    let errors = { email: '', password: ''}
+
+    //duplication error code
+    if (err.code === 11000)  {
+        errors.email = 'that email is already registerd'
+        return errors
+    }
+
+
+    //validation errors
+    if (err.message.includes('user validation failed')) {
+
+        Object.values(err.errors).forEach( ({properties}) => {
+            errors[properties.path] = properties.message
+        })
+    }
+
+    return errors
+}
+
 module.exports.sigup_get = (req, res, next) => {
     res.render('signup')
 }
@@ -20,9 +43,10 @@ module.exports.sigup_post = async (req, res, next) => {
             'message': 'add success',
             newUser
         })
-    } catch (error) {
+    } catch (err) {
+        const errors = handleError(err)
         res.status(400).json({
-            'message': 'add user fail'
+            errors
         })
     }
 
