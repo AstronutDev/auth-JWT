@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const jwt = require('jsonwebtoken')
 
 //custom error handler
 const handleError = (err) => {
@@ -23,6 +24,15 @@ const handleError = (err) => {
     return errors
 }
 
+const maxAge = 3 * 24 * 60 * 60
+
+const createToken = (id) => {
+    const secret = "@a4dw%2d"
+    return jwt.sign({id}, secret , {
+        expiresIn: maxAge
+    })
+}
+
 module.exports.sigup_get = (req, res, next) => {
     res.render('signup')
 }
@@ -38,10 +48,12 @@ module.exports.sigup_post = async (req, res, next) => {
             email,
             password
         })
-        newUser.save()
+        //after create in db, crate token
+        const token = createToken(newUser._id)
+        res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000} )
         res.status(201).json({
             'message': 'add success',
-            newUser
+            newUser: newuser._id
         })
     } catch (err) {
         const errors = handleError(err)

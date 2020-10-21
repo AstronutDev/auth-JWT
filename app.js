@@ -29,22 +29,3 @@ app.get('/', (req, res) => res.render('home'));
 app.get('/smoothies', (req, res) => res.render('smoothies'));
 app.use(authRoute)
 
-//cookie
-app.get('/set-cookies', (req, res ) => {
-  // res.setHeader('Set-cookie', 'age = 23')
-  res.cookie('name', 'pat')
-  res.cookie('isEmployee', true, { maxAge: 3000, httpOnly: true})
-
-  //for on https
-  // res.cookie('isEmployee', true, { maxAge: 3000, secure: true})
-  res.send('cookie is set')
-})
-
-app.get('/read-cookies', (req, res)=> {
-  const cookies = req.cookies
-
-  console.log(cookies);
-  res.json({
-    cookies
-  })
-})
