@@ -16,6 +16,13 @@
 <!-- process -->
 <script>
     const form = document.querySelector('form')
+    const emailError = document.querySelector('.email.error')
+    const passwordError = document.querySelector('.password.error')
+
+    //reset Error
+    emailError.textContent = ''
+    passwordError.textContent = ''
+
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault()
@@ -32,6 +39,18 @@
                     password}),
                     headers: { 'Content-Type': 'application/json'}
             })
+
+            const data = await res.json()
+            console.log(data);
+            if (data.errors) {
+                emailError.textContent = data.errors.email
+                passwordError.textContent = data.errors.password
+            }
+
+            if(data.user) {
+                location.assign('/')
+            }
+
         } catch (error) {
             console.log(error);
         }

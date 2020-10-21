@@ -53,7 +53,7 @@ module.exports.sigup_post = async (req, res, next) => {
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000} )
         res.status(201).json({
             'message': 'add success',
-            newUser: newuser._id
+            user: newUser._id
         })
     } catch (err) {
         const errors = handleError(err)
