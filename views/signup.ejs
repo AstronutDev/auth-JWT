@@ -19,13 +19,13 @@
     const emailError = document.querySelector('.email.error')
     const passwordError = document.querySelector('.password.error')
 
-    //reset Error
-    emailError.textContent = ''
-    passwordError.textContent = ''
-
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault()
+
+        //reset Error
+        emailError.textContent = ''
+        passwordError.textContent = ''
 
         //get value
         const email = form.email.value

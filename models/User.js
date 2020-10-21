@@ -18,15 +18,9 @@ const userSchema = new Schema({
     }
 })
 
-//fire a function after doc save to db
-// userSchema.post('save', (doc, next) => {
-//     console.log(('new user was create & save', doc));
-//     next()
-// })
 
 //fire a function before doc save to db
-
-//ห้ามใช้ arrow func 
+//ห้ามใช้ arrow func เนื่องจากจะมีปัญหากับ this
 
 userSchema.pre('save', async function (next){
     const salt = await bcrypt.genSalt();
@@ -34,4 +28,19 @@ userSchema.pre('save', async function (next){
     next()
 })
 
-module.exports = mongoose.model('user', userSchema)
+//static method to login user
+userSchema.statics.login = async function(email, password) {
+    const user = await this.findOne({ email })
+    if (user) {
+        const auth = await bcrypt.compare(password, user.password)        
+        if (auth) {
+            return user
+        }
+        throw Error('incorrect password')
+    }
+    throw Error('incorrect email')
+}
+
+const User = mongoose.model('user', userSchema)
+
+module.exports = User
